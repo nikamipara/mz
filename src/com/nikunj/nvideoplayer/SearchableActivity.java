@@ -110,7 +110,7 @@ public class SearchableActivity extends ActionBarActivity {
 	private String mQuery;
 	private void playfile(View view2, File mfile) {
 
-		Uri sourceUri = SearchUtil.converttoUri(mfile.toURI());
+		Uri sourceUri = Util.converttoUri(mfile.toURI());
 		Intent intent = new Intent(this, VideoPlayerActivity.class);
 		intent.setData(sourceUri);
 		intent.putExtra("keyword", mQuery);
@@ -177,7 +177,7 @@ public class SearchableActivity extends ActionBarActivity {
          }
         @Override
         protected String doInBackground(String... query) {
-        	resultvideos = SearchUtil.searchallfiles(FileManagerActivity.fileList, query[0]);
+        	resultvideos = Util.searchallfiles(FileManagerActivity.fileList, query[0]);
             return null;
         }
         protected void onPostExecute(String params){

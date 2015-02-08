@@ -2,10 +2,10 @@ package com.nikunj.nvideoplayer;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
-
 import uk.co.brightec.example.mediacontroller.R;
 import android.app.SearchManager;
 import android.content.Context;
@@ -33,6 +33,7 @@ import android.widget.GridView;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 
 public class FileManagerActivity extends ActionBarActivity  {
+	public static Context mContext;
 	public static ArrayList<File> fileList = new ArrayList<File>();
 	private ArrayList<File> fileListnew = new ArrayList<File>();
 	private File root;
@@ -88,10 +89,9 @@ public class FileManagerActivity extends ActionBarActivity  {
       		/*root = new File(Environment.getExternalStorageDirectory()
       				.getAbsolutePath()+"/Movies");
       		getfile(root);*/
+        initviews();
         loadfileList();
 		updatepref();
-        initviews();
-
     }
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -104,7 +104,7 @@ public class FileManagerActivity extends ActionBarActivity  {
 			@Override
 			public void run() {
 
-				updateprefp();
+				updateprefp(false);
 			}
 		});
 		t.start();
@@ -125,11 +125,15 @@ public class FileManagerActivity extends ActionBarActivity  {
 		color[9] =0xff0277BD;
 	}
 	private void loadfileList() {
-		if (null == fileList) {
+		/*if (null == fileList) {
 			fileList = new ArrayList<File>();
 		}
-		updatefilelist();
-		// load tasks from preference
+		*/
+		fileList = Util.loadFilelist(mContext, SHARED_PREFS_FILE);
+		if(fileList==null){
+			updateprefp(true);
+		}
+		/*// load tasks from preference
 		SharedPreferences prefs = getSharedPreferences(SHARED_PREFS_FILE,
 				Context.MODE_PRIVATE);
 		try {
@@ -138,7 +142,8 @@ public class FileManagerActivity extends ActionBarActivity  {
 							ObjectSerializer.serialize(new ArrayList<File>())));
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}*/
+		//updatefilelist();
 	}
 	private void updatefilelist() {
 		// TODO Auto-generated method stub
@@ -161,8 +166,7 @@ public class FileManagerActivity extends ActionBarActivity  {
      adapter.setAbsListView(myGridView);
      myGridView.setAdapter(adapter);
      myGridView.setOnItemClickListener(mListItemClickListener);
-     
-     
+     mContext = getApplicationContext();     
      
 
      
@@ -178,10 +182,11 @@ public class FileManagerActivity extends ActionBarActivity  {
 		
     };
 	private String SHARED_PREFS_FILE= "filelistsharedpref";
-	private String TASKS= "MyFILES";
+	/*private String TASKS= "MyFILES";*/
+	private ArrayList<URI> fileListUri;
     private void playfile(View view2, File mfile) {
     	
-    	Uri sourceUri  = SearchUtil.converttoUri(mfile.toURI());
+    	Uri sourceUri  = Util.converttoUri(mfile.toURI());
     	Intent intent = new Intent(this, VideoPlayerActivity.class);
         intent.setData(sourceUri);
         startActivity(intent);
@@ -276,7 +281,7 @@ public class FileManagerActivity extends ActionBarActivity  {
 	/*private void searchvideo(){
 		File sdCard = new File(Environment.getExternalStorageDirectory().getAbsolutePath());
 		//For example:
-		//File vidsFolder= new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Videos");
+		//File vidsFolder= nOew File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Videos");
 		searchVid(sdCard);
 		if(path_vid.size()>0){
 		   //Convert list into array
@@ -585,7 +590,7 @@ public class FileManagerActivity extends ActionBarActivity  {
 */
     
 
-    public boolean updateprefp() {
+    public boolean updateprefp(boolean isfirst) {
     		fileListnew = new ArrayList<File>();
             /*root = new File(Environment.getExternalStorageDirectory()
       				.getAbsolutePath()+"/Movies");*/
@@ -593,15 +598,29 @@ public class FileManagerActivity extends ActionBarActivity  {
       				.getAbsolutePath());
       		getfile(root);
         //save the task list to preference
-        SharedPreferences prefs = getSharedPreferences(SHARED_PREFS_FILE, Context.MODE_PRIVATE);
+      		fileListUri = new ArrayList<URI>();
+      		fill(fileListUri,fileListnew); // converts the object in to uri objects.
+      		if(isfirst){
+      			fileList = new ArrayList<File>(fileListnew);
+      		}
+      		return Util.saveSharedPref(mContext,SHARED_PREFS_FILE,fileListUri);
+      		/*SharedPreferences prefs = getSharedPreferences(SHARED_PREFS_FILE, Context.MODE_PRIVATE);
         Editor editor = prefs.edit();
         try {
-            editor.putString(TASKS, ObjectSerializer.serialize(fileListnew));
+            editor.putString(TASKS, ObjectSerializer.serialize(fileListUri));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return editor.commit();
+        return editor.commit();*/
     }
+	private boolean fill(ArrayList<URI> fileListUri, ArrayList<File> fileList) {
+		fileListUri.clear();
+		for(File f:fileList){
+			fileListUri.add(f.toURI());
+		}
+		if(fileListUri.isEmpty()) return false;
+		return true;
+	}
 	
 	
 }

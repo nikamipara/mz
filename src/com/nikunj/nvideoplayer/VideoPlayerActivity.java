@@ -208,7 +208,7 @@ public class VideoPlayerActivity extends Activity implements SurfaceHolder.Callb
 		Log.d("methods","searchQuery()");
 		mListView.setVisibility(View.VISIBLE);
         mArrayList.clear();
-        SearchUtil.searchText(srtFile, query, mArrayList);
+        Util.searchText(srtFile, query, mArrayList);
         adapter.notifyDataSetChanged();
 	}
 	@Override

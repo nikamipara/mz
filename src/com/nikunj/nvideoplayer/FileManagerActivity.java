@@ -35,20 +35,53 @@ import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter
 
 public class FileManagerActivity extends ActionBarActivity  {
 	private static final String TAG = "FileManagerActivity";
+
 	public static Context mContext;
-	public static ArrayList<File> fileList = new ArrayList<File>();
-	private ArrayList<File> fileListnew = new ArrayList<File>();
+	static Random rand;
+	public static int[] color;
+	public static ArrayList<File> fileList;
+	private ArrayList<File> fileListnew;
 	private File root;
 	private GridView myGridView;
-	public static HashMap<String,Bitmap> thumbnaillist =new HashMap<String,Bitmap>();  
-	AlphaInAnimationAdapter adapter;
+	private AlphaInAnimationAdapter adapter;
 	private CustomArrayAdaptor myadapter;
-	static Random rand = new Random();
 	//private String title;
-	public static int[] color;
+	// public static HashMap<String,Bitmap> thumbnaillist =new
+		// HashMap<String,Bitmap>();
+	private void initfields() {
+    	/*private static final String TAG = "FileManagerActivity";
+    	public static Context mContext;
+    	public static ArrayList<File> fileList = new ArrayList<File>();
+    	private ArrayList<File> fileListnew = new ArrayList<File>();
+    	private File root;
+    	private GridView myGridView;
+    	//public static HashMap<String,Bitmap> thumbnaillist =new HashMap<String,Bitmap>();  
+    	AlphaInAnimationAdapter adapter;
+    	private CustomArrayAdaptor myadapter;
+    	static Random rand = new Random();
+    	//private String title;
+    	public static int[] color;*/
+		setupcolorarray();
+		mContext = getApplicationContext();
+		rand = new Random();
+		root = new File(Environment.getExternalStorageDirectory()
+				.getAbsolutePath());
+		fileListnew = new ArrayList<File>();
+		fileList = new ArrayList<File>();
+		myGridView = (GridView) findViewById(R.id.listviewfile);
+		myadapter = new CustomArrayAdaptor(this, fileList);
+		adapter = new AlphaInAnimationAdapter(myadapter);
+		adapter.setAbsListView(myGridView);
+	    myGridView.setAdapter(adapter);
+	    myGridView.setOnItemClickListener(mListItemClickListener);
+		loadfileList();
+		updatepref();
+	    
+	}
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-    	setupcolorarray();
+    	android.os.Debug.startMethodTracing("mystring");
+    	//setupcolorarray();
     	//getActionBar().setBackgroundDrawable(R.color.titeactionbar);
     	//title = "Magic Video Player";
     	//getActionBar().setTitle(title);
@@ -91,11 +124,12 @@ public class FileManagerActivity extends ActionBarActivity  {
       		/*root = new File(Environment.getExternalStorageDirectory()
       				.getAbsolutePath()+"/Movies");
       		getfile(root);*/
-        initviews();
-        loadfileList();
-		updatepref();
+        initfields();
+        android.os.Debug.stopMethodTracing(); 
+        
     }
-    @Override
+    
+	@Override
     public void onConfigurationChanged(Configuration newConfig) {
     	myGridView.setNumColumns(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE ? 3 : 2);
     	super.onConfigurationChanged(newConfig);
@@ -133,7 +167,9 @@ public class FileManagerActivity extends ActionBarActivity  {
 		*/
 		fileList = Util.loadFilelist(mContext, SHARED_PREFS_FILE);
 		if(fileList==null){
-			updateprefp(true);
+			//updateprefp(true);
+			Log.d(TAG,"pref fucked up ");
+			updatepref();
 		}
 		/*// load tasks from preference
 		SharedPreferences prefs = getSharedPreferences(SHARED_PREFS_FILE,
@@ -160,19 +196,12 @@ public class FileManagerActivity extends ActionBarActivity  {
 			+"cursor data is "+cursor.getString(0));
 		int i = 10;//check point.
 	}
-	private void initviews() {
-	
-     myGridView = (GridView) findViewById(R.id.listviewfile);
-     myadapter = new CustomArrayAdaptor(this,fileList);
-     adapter = new AlphaInAnimationAdapter(myadapter);
+	/*private void initviews() {
      adapter.setAbsListView(myGridView);
      myGridView.setAdapter(adapter);
      myGridView.setOnItemClickListener(mListItemClickListener);
-     mContext = getApplicationContext();     
      
-
-     
-	}
+	}*/
     private AdapterView.OnItemClickListener mListItemClickListener = new AdapterView.OnItemClickListener() {
 
         @Override
@@ -362,9 +391,10 @@ public class FileManagerActivity extends ActionBarActivity  {
         int id = item.getItemId();
         if (id == R.id.refreshlist) {
 			fileList = new ArrayList<File> (fileListnew);
+			updatepref();
 			myadapter.clear();
 			myadapter.addAll(fileList);
-		   adapter.notifyDataSetChanged();
+		    adapter.notifyDataSetChanged();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -598,8 +628,7 @@ public class FileManagerActivity extends ActionBarActivity  {
       				.getAbsolutePath()+"/Movies");*/
     		Log.d(TAG,"absolute path of sd card"+Environment.getExternalStorageDirectory()
       				.getAbsolutePath());
-    		root = new File(Environment.getExternalStorageDirectory()
-      				.getAbsolutePath());
+    		
     		 
       		getfile(root);
       		//for extarnal SD card

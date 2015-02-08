@@ -36,7 +36,7 @@
         android:text="@+id/label"
         android:textSize="15dp"
         android:elevation="6dp"
-        android:gravity="center_horizontal"
+        android:gravity="center_horizontal|center_vertical"
         android:maxLines="2" >
     </TextView>
 

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="titeactionbar">#3F51B5</color>
+    <color name="background">#E8EAF6</color>
+    <color name="background2">@android:color/black</color>
+     <color name="backgroundcontroller">#CC5C6BC0</color><!-- #CCE8EAF6</color> -->
+    <color name="textcolor">@android:color/white</color>
+    <color name="textcolordark">#5C6BC0</color>
+
+</resources>

@@ -1,1 +1,12 @@
-git push -u origin master to push to server
+git status //for the status
+
+git commit -m "Add cute octocat story" // for commit
+git log //for the log
+ git remote add origin https://github.com/try-git/try_git.git to add remote repositories
+ git push -u origin master to push to server
+ git pull origin master to pull the changes for the server
+ git diff HEAD great use for diff is looking at changes within files that have already been staged. Remember, staged files are files we have told git that are ready to be committed.
+ git checkout -- octocat.txt deletes all the thing since last commit
+ git branch clean_up creates new branch called clean up
+ git checkout cleanup // switch to cleanup branch
+ git merge branchname // merges that branch with the current branch

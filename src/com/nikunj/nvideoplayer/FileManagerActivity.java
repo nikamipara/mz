@@ -6,6 +6,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+
 import uk.co.brightec.example.mediacontroller.R;
 import android.app.SearchManager;
 import android.content.Context;
@@ -33,6 +34,7 @@ import android.widget.GridView;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 
 public class FileManagerActivity extends ActionBarActivity  {
+	private static final String TAG = "FileManagerActivity";
 	public static Context mContext;
 	public static ArrayList<File> fileList = new ArrayList<File>();
 	private ArrayList<File> fileListnew = new ArrayList<File>();
@@ -594,9 +596,19 @@ public class FileManagerActivity extends ActionBarActivity  {
     		fileListnew = new ArrayList<File>();
             /*root = new File(Environment.getExternalStorageDirectory()
       				.getAbsolutePath()+"/Movies");*/
+    		Log.d(TAG,"absolute path of sd card"+Environment.getExternalStorageDirectory()
+      				.getAbsolutePath());
     		root = new File(Environment.getExternalStorageDirectory()
       				.getAbsolutePath());
+    		 
       		getfile(root);
+      		//for extarnal SD card
+      		if(new File("/storage/extSdCard/").exists()) 
+    		{ 
+    		  String extarnalsdpath = "/storage/extSdCard/";
+    		  Log.i("Sd Cardext Path",extarnalsdpath); 
+    		  getfile(new File(extarnalsdpath));
+    		}
         //save the task list to preference
       		fileListUri = new ArrayList<URI>();
       		fill(fileListUri,fileListnew); // converts the object in to uri objects.

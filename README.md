@@ -1,4 +1,2 @@
-ExampleMediaController
-======================
-
-This is an example project that goes with http://www.brightec.co.uk/blog/custom-android-media-controller
+#Smart Video Player 
+An Android applicaiton to search dialogs in video files. makes use of subtitles.
